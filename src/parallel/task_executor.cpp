@@ -2,6 +2,9 @@
 #include "duckdb/parallel/task_notifier.hpp"
 #include "duckdb/parallel/task_scheduler.hpp"
 
+#include <chrono>
+#include <thread>
+
 namespace duckdb {
 
 TaskExecutor::TaskExecutor(TaskScheduler &scheduler)
@@ -46,6 +49,7 @@ void TaskExecutor::WorkOnTasks() {
 	}
 	// wait for all active tasks to finish
 	while (completed_tasks != total_tasks) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
 	// check if we ran into any errors while checkpointing
