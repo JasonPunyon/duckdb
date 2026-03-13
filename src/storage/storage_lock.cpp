@@ -4,6 +4,9 @@
 #include "duckdb/common/common.hpp"
 #include "duckdb/common/assert.hpp"
 
+#include <chrono>
+#include <thread>
+
 namespace duckdb {
 
 struct StorageLockInternals : enable_shared_from_this<StorageLockInternals> {
@@ -18,6 +21,7 @@ public:
 	unique_ptr<StorageLockKey> GetExclusiveLock() {
 		exclusive_lock.lock();
 		while (read_count != 0) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 		return make_uniq<StorageLockKey>(shared_from_this(), StorageLockType::EXCLUSIVE);
 	}
